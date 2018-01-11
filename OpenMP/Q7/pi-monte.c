@@ -108,16 +108,16 @@ int main()
 	time_taken_seq = omp_get_wtime();
 	pi = seq_pimonte(num_steps,1);
 	time_taken_seq = omp_get_wtime() - time_taken_seq;
-	printf("Sequential program : %lf \n", pi);
+	printf("Sequential program Pi : %lf \n", pi);
 
+	printf("Parallel Calculation\n");
 	int NUM_THREADS = 2;
-	while(NUM_THREADS<=8)
+	while(NUM_THREADS<=20)
 	{
 		time_taken_parallel = omp_get_wtime();
 		pi = parallel_pimonte(num_steps,1,NUM_THREADS);
 		time_taken_parallel = omp_get_wtime() - time_taken_parallel;
-		printf("Parallel program : %lf with %d threads\n",pi,NUM_THREADS );
-		printf("Speed up : %lf\n", time_taken_parallel/time_taken_seq);
+		printf("Pi :  %lf \t Speedup: %lf \t Threads : %d\n", pi,time_taken_parallel/time_taken_seq,NUM_THREADS);		
 		NUM_THREADS++;
 	}
 

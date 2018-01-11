@@ -38,13 +38,12 @@ int main()
 
 	//Parallel Execution
 	int NUM_THREADS = 2;
-	while(NUM_THREADS<=10)
+	while(NUM_THREADS<=20)
 	{
 		time_taken_parallel = omp_get_wtime();
-		int nthreads = parallel_daxpy(x,y,a,NUM_THREADS);
+		parallel_daxpy(x,y,a,NUM_THREADS);
 		time_taken_parallel = omp_get_wtime() - time_taken_parallel;
-		printf("Time taken for parrallel function with %d threads : %lf ms\n",NUM_THREADS,time_taken_parallel*100 );
-		printf("Speed up : %lf\n",time_taken_parallel/time_taken_serial);
+		printf("Speed up : %lf  Threads : %d\n",time_taken_parallel/time_taken_serial,NUM_THREADS);
 		
 		NUM_THREADS++;
 	}

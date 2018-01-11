@@ -2,7 +2,7 @@
 #include <omp.h>
 #define SIZE 1000
 
-int a[SIZE][SIZE],b[SIZE][SIZE],c[SIZE][SIZE];
+int a[SIZE][SIZE],b[SIZE][SIZE],res_seq[SIZE][SIZE],res_parallel[SIZE][SIZE];
 
 void seq_matmul(int a[][SIZE],int b[][SIZE])
 {
@@ -12,10 +12,10 @@ void seq_matmul(int a[][SIZE],int b[][SIZE])
 	{
 		for(j=0;j<SIZE;++j)
 		{
-			c[i][j]=0;
+			res_seq[i][j]=0;
 			for(k=0;k<SIZE;++k)
 			{
-				c[i][j] = c[i][j] + a[i][k]*b[k][j];
+				res_seq[i][j] = res_seq[i][j] + a[i][k]*b[k][j];
 			}
 		}
 	}
@@ -25,7 +25,6 @@ void parallel_matmul(int a[][SIZE],int b[][SIZE],int NUM_THREADS)
 {
 
 	int nthreads;
-	int c[SIZE][SIZE];
 	omp_set_num_threads(NUM_THREADS);
 	int i,j,k;
 	#pragma omp parallel for private(i)
@@ -43,10 +42,19 @@ void parallel_matmul(int a[][SIZE],int b[][SIZE],int NUM_THREADS)
 
 				#pragma omp critical
 				{
-					c[i][j] = t_sum;
+					res_parallel[i][j] = t_sum;
 				}
 			}
 		}
+}
+
+int check_eq_matrix()
+{
+	for(int i=0;i<SIZE;++i)
+		for(int j=0;j<SIZE;++j)
+			if(res_seq[i][j] != res_parallel[i][j])
+				return 0;
+	return 1;
 }
 int main()
 {
@@ -59,12 +67,16 @@ int main()
 	seq_matmul(a,b);
 	time_taken_serial = omp_get_wtime() - time_taken_serial;
 	int NUM_THREADS=2;
-	while(NUM_THREADS<=10)
+	while(NUM_THREADS<=20)
 	{
 		time_taken_parallel = omp_get_wtime();
 		parallel_matmul(a,b,NUM_THREADS);
 		time_taken_parallel = omp_get_wtime() - time_taken_parallel;
-		printf("Speed up for %d threads is %lf\n",NUM_THREADS,time_taken_parallel/time_taken_serial); 
+		if(check_eq_matrix())
+			printf("Speed up for %d threads is %lf\n",NUM_THREADS,time_taken_parallel/time_taken_serial); 
+		else
+			printf("Parallel program gave wrong answer\n");
+		
 		NUM_THREADS++;
 	}
 }	

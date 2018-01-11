@@ -68,12 +68,12 @@ int main()
 	time_taken_seq = omp_get_wtime();
 	sum = seq_prod_cons();
 	time_taken_seq = omp_get_wtime() - time_taken_seq;
-	printf(" In %lf seconds, Sequential code gives sum : %lf \n",time_taken_seq,sum);
+	printf("In %lf seconds, Sequential code gives sum : %lf \n",time_taken_seq,sum);
 
 	//Parallel Producer-Consumer
 	time_taken_parallel = omp_get_wtime();
 	sum = parallel_prod_cons();
 	time_taken_parallel = omp_get_wtime() - time_taken_parallel;
-	printf(" In %lf seconds, Parallel code gives sum : %lf \n",time_taken_parallel,sum);
+	printf("In %lf seconds, Parallel code gives sum : %lf \n",time_taken_parallel,sum);
 	printf("Speed up : %lf\n", time_taken_parallel/time_taken_seq);
 }
