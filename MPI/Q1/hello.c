@@ -1,13 +1,6 @@
 #include <stdio.h>
 #include <mpi.h>
 
-struct dd
-{
-	char c;
-	int a[2];
-	float f[4];
-};
-
 int main(int argc, char const *argv[])
 {
 	int rank,world_size,namelen;
@@ -21,12 +14,8 @@ int main(int argc, char const *argv[])
 
 	MPI_Get_processor_name(name,&namelen);
 
-
-	char c;
-	int a[2];
-	float f[4];
-
 	
+	printf("Hello world from process of Rank %d out of %d, running on %s\n",rank,world_size,name);
 	
 	MPI_Finalize();
 

@@ -13,6 +13,8 @@ int main(int argc, char const *argv[])
 	MPI_Barrier(MPI_COMM_WORLD);
 	time = MPI_Wtime();
 
+	MPI_Bcast(&num_steps,1,MPI_LONG_LONG,0,MPI_COMM_WORLD);
+
 	for(int i=rank;i<num_steps;i+=world_size)
 	{
 		x = (i+0.5)/num_steps;

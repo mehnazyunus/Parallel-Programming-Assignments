@@ -4,8 +4,8 @@
 struct dd
 {
 	char c;
-	int a[2];
-	float f[4];
+	int iA[2];
+	float fA[4];
 };
 
 int count = 3;
@@ -18,14 +18,13 @@ struct dd get_filled_struct(char key)
 
 	struct dd temp;
 	temp.c = key;
-	temp.a[0] = key, temp.a[1] = key + 1;
 	for(int i=0;i<4;++i)
 	{
 		if(i<2)
 		{
-			temp.a[i] = key + i;
+			temp.iA[i] = key + i;
 		}
-		temp.f[i] = key + i;
+		temp.fA[i] = key + i;
 	}
 
 	return temp;
@@ -46,8 +45,8 @@ int main(int argc, char const *argv[])
 	struct dd temp;
 
 	MPI_Get_address(&temp.c,&array_of_displacements[0]);
-	MPI_Get_address(temp.a,&array_of_displacements[1]);
-	MPI_Get_address(temp.f,&array_of_displacements[2]);
+	MPI_Get_address(temp.iA,&array_of_displacements[1]);
+	MPI_Get_address(temp.fA,&array_of_displacements[2]);
 
 	array_of_displacements[2] = array_of_displacements[2] - array_of_displacements[0];
 	array_of_displacements[1] = array_of_displacements[1] - array_of_displacements[0];
@@ -65,8 +64,9 @@ int main(int argc, char const *argv[])
 	{
 		temp = get_filled_struct('1');
 	}
+
 	MPI_Bcast(&temp,1,newtype,0,MPI_COMM_WORLD);
-	printf("Collective Communication \nRank : %d Structure : %c - %d %d - %f %f %f %f\n",rank,temp.c,temp.a[0],temp.a[1],temp.f[0],temp.f[1],temp.f[2],temp.f[3]);
+	printf("Collective Communication Rank : %d Structure : %c - %d %d - %f %f %f %f\n",rank,temp.c,temp.iA[0],temp.iA[1],temp.fA[0],temp.fA[1],temp.fA[2],temp.fA[3]);
 
 	//Point-to-point communication of the filled structure
 	if(rank == 0)
@@ -81,7 +81,7 @@ int main(int argc, char const *argv[])
 	{	
 		MPI_Status status;
 		MPI_Recv(&temp,1,newtype,0,0,MPI_COMM_WORLD,&status);
-		printf("Point-to-point communication \nRank : %d Structure : %c - %d %d - %f %f %f %f\n",rank,temp.c,temp.a[0],temp.a[1],temp.f[0],temp.f[1],temp.f[2],temp.f[3]);
+		printf("Point-to-point communication Rank : %d Structure : %c - %d %d - %f %f %f %f\n",rank,temp.c,temp.iA[0],temp.iA[1],temp.fA[0],temp.fA[1],temp.fA[2],temp.fA[3]);
 	}
 
 	MPI_Finalize();
