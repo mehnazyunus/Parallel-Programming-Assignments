@@ -1,12 +1,10 @@
-/*
-  Joe Antony - 15CO220
-  Prateek Kembhavi - 15CO223 
-*/
+
 
 #include "wb.h"
 #include <stdio.h>
 #define TILE_WIDTH 16
 
+//Tiled matrix multiplication
 __global__ void matrixMultiply(float * A, float * B, float * C,
   		       int numARows, int numAColumns,
 			       int numBRows, int numBColumns,

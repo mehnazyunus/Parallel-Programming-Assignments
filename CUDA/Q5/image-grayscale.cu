@@ -4,7 +4,7 @@
 #include <cuda.h>
 #include "wb.h"
 
-//@@ INSERT CODE HERE
+//Grayscaling function
 __global__ void convert(float* input, float* output, int height, int width)
 {
   unsigned int idx = blockDim.x * blockIdx.x + threadIdx.x;
@@ -26,8 +26,7 @@ int main(int argc, char *argv[]) {
   float *deviceInputImageData;
   float *deviceOutputImageData;
 
-  /* parse the input arguments */
-  //@@ Insert code here
+
   wbArg_t args = wbArg_read(argc, argv);
 
   inputImageFile = wbArg_getInputFile(args, 1);
@@ -36,10 +35,9 @@ int main(int argc, char *argv[]) {
 
   imageWidth  = wbImage_getWidth(inputImage);
   imageHeight = wbImage_getHeight(inputImage);
-  // For this lab the value is always 3
+
   imageChannels = wbImage_getChannels(inputImage);
 
-  // Since the image is monochromatic, it only contains one channel
   outputImage = wbImage_new(imageWidth, imageHeight, 0);
 
   hostInputImageData  = wbImage_getData(inputImage);
@@ -60,14 +58,11 @@ int main(int argc, char *argv[]) {
              cudaMemcpyHostToDevice);
   wbTime_stop(Copy, "Copying data to the GPU");
 
-  ///////////////////////////////////////////////////////
   wbTime_start(Compute, "Doing the computation on the GPU");
-  //@@ INSERT CODE HERE
   convert<<<((imageWidth*imageHeight)/1024) + 1, 1024>>> (deviceInputImageData, deviceOutputImageData, imageHeight, imageWidth);
 
   wbTime_stop(Compute, "Doing the computation on the GPU");
 
-  ///////////////////////////////////////////////////////
   wbTime_start(Copy, "Copying data from the GPU");
   cudaMemcpy(hostOutputImageData, deviceOutputImageData,
              imageWidth * imageHeight * sizeof(float),

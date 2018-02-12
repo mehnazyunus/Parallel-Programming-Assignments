@@ -2,3 +2,5 @@
 *.png
 *.tar.gz
 *.zip
+*.ppm
+*.pbm

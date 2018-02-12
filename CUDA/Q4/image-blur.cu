@@ -1,5 +1,4 @@
 
-
 #include <cuda.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,20 +50,15 @@ int main(int argc, char *argv[]) {
   float *deviceOutputImageData;
 
 
-  /* parse the input arguments */
-  //@@ Insert code here
   wbArg_t args = wbArg_read(argc, argv);
 
   inputImageFile = wbArg_getInputFile(args, 1);
 
   inputImage = wbImport(inputImageFile);
 
-  // The input image is in grayscale, so the number of channels
-  // is 1
   imageWidth  = wbImage_getWidth(inputImage);
   imageHeight = wbImage_getHeight(inputImage);
 
-  // Since the image is monochromatic, it only contains only one channel
   outputImage = wbImage_new(imageWidth, imageHeight, 0);
 
   hostInputImageData  = wbImage_getData(inputImage);
@@ -85,7 +79,6 @@ int main(int argc, char *argv[]) {
              cudaMemcpyHostToDevice);
   wbTime_stop(Copy, "Copying data to the GPU");
 
-  ///////////////////////////////////////////////////////
   wbTime_start(Compute, "Doing the computation on the GPU");
   dim3 local_size(32, 32, 1);
   dim3 global_size(imageHeight/32 +1, imageWidth/32 +1, 1);
@@ -94,7 +87,6 @@ int main(int argc, char *argv[]) {
 
   wbTime_stop(Compute, "Doing the computation on the GPU");
 
-  ///////////////////////////////////////////////////////
   wbTime_start(Copy, "Copying data from the GPU");
   cudaMemcpy(hostOutputImageData, deviceOutputImageData,
              imageWidth * imageHeight * sizeof(float),
